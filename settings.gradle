@@ -1,1 +1,1 @@
-include ':pubnub'
+include ':app'
