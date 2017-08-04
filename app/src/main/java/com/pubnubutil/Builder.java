@@ -1,6 +1,8 @@
 package com.pubnubutil;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -24,7 +26,6 @@ public class Builder {
     public Builder(@NonNull Context context) {
         pubNubParam = new PubNubParam();
         pubNubParam.context = context;
-        defaultParam();
     }
 
     /**
@@ -36,7 +37,6 @@ public class Builder {
         pubNubParam = new PubNubParam();
         pubNubParam.context = context;
         pubNubParam.activity = context;
-        defaultParam();
     }
 
     /**
@@ -49,7 +49,6 @@ public class Builder {
         pubNubParam = new PubNubParam();
         pubNubParam.context = context;
         pubNubParam.event = event;
-        defaultParam();
     }
 
     /**
@@ -63,7 +62,6 @@ public class Builder {
         pubNubParam.context = context;
         pubNubParam.activity = context;
         pubNubParam.event = event;
-        defaultParam();
     }
 
     /**
@@ -105,17 +103,6 @@ public class Builder {
         pubNubParam.subscribe_key = subscribe_key;
         pubNubParam.publish_key = publish_key;
         pubNubParam.ssl_on = ssl_on;
-    }
-
-    /**
-     * Default param.
-     */
-    public void defaultParam() {
-        pubNubParam.secret_key = PubNubConstant.SECRET_KEY;
-        pubNubParam.cipher_key = PubNubConstant.CIPHER_KEY;
-        pubNubParam.subscribe_key = PubNubConstant.SUBSCRIBE_KEY;
-        pubNubParam.publish_key = PubNubConstant.PUBLISH_KEY;
-        pubNubParam.ssl_on = true;
     }
 
     /**
@@ -196,7 +183,12 @@ public class Builder {
         return this;
     }
 
-    public History fetchHistory(){
+    public Builder progressDialog(@NonNull Dialog progressDialog) {
+        pubNubParam.dialog = progressDialog;
+        return this;
+    }
+
+    public History fetchHistory() {
         return new History(pubNubParam);
     }
 

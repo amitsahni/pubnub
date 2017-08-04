@@ -280,6 +280,10 @@ public class Pubnub {
                 unRegisterInBackground(pubNubParam);
                 break;
             case CHAT_HISTORY:
+                if (pubNubParam.dialog != null &&
+                        !pubNubParam.dialog.isShowing()) {
+                    pubNubParam.dialog.show();
+                }
                 sPubnub.history()
                         .channel(pubNubParam.channels[0])
                         .count(pubNubParam.count > 100 ? 100 : pubNubParam.count)
@@ -290,6 +294,10 @@ public class Pubnub {
                         .async(new PNCallback<PNHistoryResult>() {
                             @Override
                             public void onResponse(PNHistoryResult result, PNStatus status) {
+                                if (pubNubParam.dialog != null
+                                        && pubNubParam.dialog.isShowing()) {
+                                    pubNubParam.dialog.dismiss();
+                                }
                                 if (status.isError()) {
                                     // handle error
                                     if (BuildConfig.DEBUG) {

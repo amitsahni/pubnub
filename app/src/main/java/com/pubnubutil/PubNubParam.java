@@ -1,6 +1,8 @@
 package com.pubnubutil;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 
 
@@ -68,6 +70,7 @@ public class PubNubParam {
 
     protected Long end = 0L;
 
+    protected Dialog dialog;
     /**
      * The enum Event.
      */
