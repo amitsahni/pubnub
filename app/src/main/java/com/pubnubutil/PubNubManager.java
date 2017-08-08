@@ -41,8 +41,8 @@ public class PubNubManager {
      * @param context the context
      * @return the builder
      */
-    public static Builder with(@NonNull Context context) {
-        return new Builder(context);
+    public static PubNubParam.Builder with(@NonNull Context context) {
+        return new PubNubParam.Builder(context);
     }
 
     /**
@@ -51,19 +51,8 @@ public class PubNubManager {
      * @param context the context
      * @return the builder
      */
-    public static Builder with(@NonNull Activity context) {
-        return new Builder(context);
-    }
-
-    /**
-     * With builder.
-     *
-     * @param context the context
-     * @param event   the event
-     * @return the builder
-     */
-    public static Builder with(@NonNull Context context, @NonNull PubNubParam.Event event) {
-        return new Builder(context, event);
+    public static PubNubParam.Builder with(@NonNull Activity context) {
+        return new PubNubParam.Builder(context);
     }
 
     /**
@@ -73,8 +62,19 @@ public class PubNubManager {
      * @param event   the event
      * @return the builder
      */
-    public static Builder with(@NonNull Activity context, @NonNull PubNubParam.Event event) {
-        return new Builder(context, event);
+    public static PubNubParam.Builder with(@NonNull Context context, @NonNull PubNubParam.Event event) {
+        return new PubNubParam.Builder(context, event);
+    }
+
+    /**
+     * With builder.
+     *
+     * @param context the context
+     * @param event   the event
+     * @return the builder
+     */
+    public static PubNubParam.Builder with(@NonNull Activity context, @NonNull PubNubParam.Event event) {
+        return new PubNubParam.Builder(context, event);
     }
 
     /**
@@ -88,9 +88,9 @@ public class PubNubManager {
      * @param ssl_on        the ssl on
      * @return the builder
      */
-    public static Builder with(@NonNull Context context, String publish_key, String subscribe_key, String secret_key,
+    public static PubNubParam.Builder with(@NonNull Context context, String publish_key, String subscribe_key, String secret_key,
                                String cipher_key, boolean ssl_on) {
-        return new Builder(context, publish_key, subscribe_key, secret_key, cipher_key, ssl_on);
+        return new PubNubParam.Builder(context, publish_key, subscribe_key, secret_key, cipher_key, ssl_on);
     }
 
     /**
@@ -103,8 +103,8 @@ public class PubNubManager {
      * @param ssl_on        the ssl on
      * @return the builder
      */
-    public static Builder with(@NonNull Activity context, String publish_key, String subscribe_key, String secret_key,
+    public static PubNubParam.Builder with(@NonNull Activity context, String publish_key, String subscribe_key, String secret_key,
                                boolean ssl_on) {
-        return new Builder(context, publish_key, subscribe_key, secret_key, ssl_on);
+        return new PubNubParam.Builder(context, publish_key, subscribe_key, secret_key, ssl_on);
     }
 }
