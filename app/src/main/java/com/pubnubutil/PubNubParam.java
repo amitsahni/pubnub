@@ -371,16 +371,13 @@ public class PubNubParam implements Serializable {
             return new History(pubNubParam);
         }
 
-        public PubNubParam getParam() {
-            return pubNubParam;
-        }
-
         /**
          * Build.
          */
-        public void build() {
+        public PubNubParam build() {
             Pubnub pubNub = new Pubnub(pubNubParam);
             pubNub.handleEvent(pubNubParam);
+            return pubNubParam;
         }
 
         public List<String> getSubscribedList() {
@@ -430,9 +427,10 @@ public class PubNubParam implements Serializable {
         /**
          * Build.
          */
-        public void build() {
+        public PubNubParam build() {
             Pubnub pubNub = new Pubnub(pubNubParam);
             pubNub.handleEvent(pubNubParam);
+            return pubNubParam;
         }
     }
 
