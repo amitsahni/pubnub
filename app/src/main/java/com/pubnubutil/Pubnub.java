@@ -57,15 +57,15 @@ public class Pubnub {
             synchronized (Pubnub.class) {
                 if (sPubnub == null) {
                     PNConfiguration pnConfiguration = new PNConfiguration();
-                    pnConfiguration.setSubscribeKey(pubNubParam.getSubscribe_key());
-                    pnConfiguration.setPublishKey(pubNubParam.getPublish_key());
+                    pnConfiguration.setSubscribeKey(pubNubParam.getPubnubConfiguration().getSubscribe_key());
+                    pnConfiguration.setPublishKey(pubNubParam.getPubnubConfiguration().getPublish_key());
                     pnConfiguration.setSecure(false);
                     sPubnub = new com.pubnub.api.PubNub(pnConfiguration);
                     sPubnub.addListener(new PubNubCallback(pubNubParam));
                 }
             }
         }
-        if (pubNubParam.isEnableGCM()) {
+        if (pubNubParam.getPubnubConfiguration().isEnableGCM()) {
             gcmRegister(pubNubParam);
         } else {
             //unRegisterInBackground(pubNubParam);
@@ -284,32 +284,35 @@ public class Pubnub {
                         !pubNubParam.getDialog().isShowing()) {
                     pubNubParam.getDialog().show();
                 }
-                sPubnub.history()
-                        .channel(pubNubParam.getChannels()[0])
-                        .count(pubNubParam.getCount() > 100 ? 100 : pubNubParam.getCount())
-                        .includeTimetoken(pubNubParam.isIncludeTimeToken())
-                        .reverse(pubNubParam.isReverse())
-                        .start(pubNubParam.getStart() > 0L ? pubNubParam.getStart() : null)
-                        .end(pubNubParam.getEnd() > 0L ? pubNubParam.getEnd() : null)
-                        .async(new PNCallback<PNHistoryResult>() {
-                            @Override
-                            public void onResponse(PNHistoryResult result, PNStatus status) {
-                                if (pubNubParam.getDialog() != null
-                                        && pubNubParam.getDialog().isShowing()) {
-                                    pubNubParam.getDialog().dismiss();
-                                }
-                                if (status.isError()) {
-                                    // handle error
-                                    if (BuildConfig.DEBUG) {
-                                        Log.d(getClass().getSimpleName(), "Publish:" + status.toString());
+                final int size = pubNubParam.getChannels().length;
+                for (int i = 0; i < size; i++) {
+                    sPubnub.history()
+                            .channel(pubNubParam.getChannels()[i])
+                            .count(pubNubParam.getCount() > 100 ? 100 : pubNubParam.getCount())
+                            .includeTimetoken(pubNubParam.isIncludeTimeToken())
+                            .reverse(pubNubParam.isReverse())
+                            .start(pubNubParam.getStart() > 0L ? pubNubParam.getStart() : null)
+                            .end(pubNubParam.getEnd() > 0L ? pubNubParam.getEnd() : null)
+                            .async(new PNCallback<PNHistoryResult>() {
+                                @Override
+                                public void onResponse(PNHistoryResult result, PNStatus status) {
+                                    if (pubNubParam.getDialog() != null
+                                            && pubNubParam.getDialog().isShowing()) {
+                                        pubNubParam.getDialog().dismiss();
                                     }
-                                    return;
+                                    if (status.isError()) {
+                                        // handle error
+                                        if (BuildConfig.DEBUG) {
+                                            Log.d(getClass().getSimpleName(), "Publish:" + status.toString());
+                                        }
+                                        return;
+                                    }
+                                    if (pubNubParam.getListener() != null) {
+                                        pubNubParam.getListener().onSuccess(status.toString(), result);
+                                    }
                                 }
-                                if (pubNubParam.getListener() != null) {
-                                    pubNubParam.getListener().onSuccess(status.toString(), result);
-                                }
-                            }
-                        });
+                            });
+                }
                 break;
             case HERE_NOW:
                 sPubnub.hereNow()
@@ -482,7 +485,7 @@ public class Pubnub {
                 // Local Broadcast
                 //send broadcast for application
                 LocalBroadcastManager.getInstance(pubNubParam.getContext())
-                        .sendBroadcast(new Intent(PubNubConstant.BROADCAST)
+                        .sendBroadcast(new Intent(PubNubConstant.LOCAL_BROADCAST)
                                 .putExtra(PubNubConstant.BUNDLE_MESSAGE, message.getMessage().toString())
                                 .putExtra(PubNubConstant.BUNDLE_CHANNEL, message.getChannel()));
 

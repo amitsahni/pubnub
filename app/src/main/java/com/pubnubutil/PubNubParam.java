@@ -18,12 +18,7 @@ import java.util.List;
 public class PubNubParam implements Serializable {
     private Context context;
     private Activity activity;
-    private String publish_key,
-            subscribe_key,
-            secret_key,
-            cipher_key;
-    private boolean ssl_on,
-            enableGCM;
+    private PubnubConfiguration pubnubConfiguration;
     private Event event = Event.SUB;
     private String[] channels;
     private OnPushMessageListener listener;
@@ -118,30 +113,6 @@ public class PubNubParam implements Serializable {
         return activity;
     }
 
-    public String getPublish_key() {
-        return publish_key;
-    }
-
-    public String getSubscribe_key() {
-        return subscribe_key;
-    }
-
-    public String getSecret_key() {
-        return secret_key;
-    }
-
-    public String getCipher_key() {
-        return cipher_key;
-    }
-
-    public boolean isSsl_on() {
-        return ssl_on;
-    }
-
-    public boolean isEnableGCM() {
-        return enableGCM;
-    }
-
     public Event getEvent() {
         return event;
     }
@@ -190,6 +161,10 @@ public class PubNubParam implements Serializable {
         return dialog;
     }
 
+    protected PubnubConfiguration getPubnubConfiguration() {
+        return pubnubConfiguration;
+    }
+
     /**
      * The type Builder.
      */
@@ -197,25 +172,20 @@ public class PubNubParam implements Serializable {
 
         private PubNubParam pubNubParam;
 
-        /**
-         * Instantiates a new Builder.
-         *
-         * @param context the context
-         */
-        public Builder(@NonNull Context context) {
-            pubNubParam = new PubNubParam();
-            pubNubParam.context = context;
-        }
 
         /**
          * Instantiates a new Builder.
          *
          * @param context the context
+         * @param event   the event
          */
-        public Builder(@NonNull Activity context) {
+        public Builder(@NonNull Context context,
+                       @NonNull PubNubParam.Event event, @NonNull PubnubConfiguration pubnubConfiguration) {
             pubNubParam = new PubNubParam();
             pubNubParam.context = context;
-            pubNubParam.activity = context;
+            pubNubParam.event = event;
+            pubNubParam.pubnubConfiguration = pubnubConfiguration;
+            PubNubConstant.BROADCAST = context.getPackageName() + ".pubnub";
         }
 
         /**
@@ -224,76 +194,14 @@ public class PubNubParam implements Serializable {
          * @param context the context
          * @param event   the event
          */
-        public Builder(@NonNull Context context, @NonNull PubNubParam.Event event) {
-            pubNubParam = new PubNubParam();
-            pubNubParam.context = context;
-            pubNubParam.event = event;
-        }
-
-        /**
-         * Instantiates a new Builder.
-         *
-         * @param context the context
-         * @param event   the event
-         */
-        public Builder(@NonNull Activity context, @NonNull PubNubParam.Event event) {
+        public Builder(@NonNull Activity context,
+                       @NonNull PubNubParam.Event event, @NonNull PubnubConfiguration pubnubConfiguration) {
             pubNubParam = new PubNubParam();
             pubNubParam.context = context;
             pubNubParam.activity = context;
             pubNubParam.event = event;
-        }
-
-        /**
-         * Instantiates a new Builder.
-         *
-         * @param context       the context
-         * @param publish_key   the publish key
-         * @param subscribe_key the subscribe key
-         * @param secret_key    the secret key
-         * @param cipher_key    the cipher key
-         * @param ssl_on        the ssl on
-         */
-        public Builder(@NonNull Context context, String publish_key, String subscribe_key, String secret_key,
-                       String cipher_key, boolean ssl_on) {
-            pubNubParam = new PubNubParam();
-            pubNubParam.context = context;
-            pubNubParam.secret_key = secret_key;
-            pubNubParam.cipher_key = cipher_key;
-            pubNubParam.subscribe_key = subscribe_key;
-            pubNubParam.publish_key = publish_key;
-            pubNubParam.ssl_on = ssl_on;
-        }
-
-        /**
-         * Instantiates a new Builder.
-         *
-         * @param context       the context
-         * @param publish_key   the publish key
-         * @param subscribe_key the subscribe key
-         * @param secret_key    the secret key
-         * @param ssl_on        the ssl on
-         */
-        public Builder(@NonNull Activity context, String publish_key, String subscribe_key, String secret_key,
-                       boolean ssl_on) {
-            pubNubParam = new PubNubParam();
-            pubNubParam.context = context;
-            pubNubParam.activity = context;
-            pubNubParam.secret_key = secret_key;
-            pubNubParam.subscribe_key = subscribe_key;
-            pubNubParam.publish_key = publish_key;
-            pubNubParam.ssl_on = ssl_on;
-        }
-
-        /**
-         * Enable gcm builder.
-         *
-         * @param enableGCM the enable gcm
-         * @return the builder
-         */
-        public Builder enableGCM(boolean enableGCM, String senderId) {
-            pubNubParam.enableGCM = enableGCM;
-            pubNubParam.senderId = senderId;
-            return this;
+            pubNubParam.pubnubConfiguration = pubnubConfiguration;
+            PubNubConstant.BROADCAST = context.getPackageName() + ".pubnub";
         }
 
         /**
@@ -304,17 +212,6 @@ public class PubNubParam implements Serializable {
          */
         public Builder callback(@NonNull PubNubParam.OnPushMessageListener callback) {
             pubNubParam.listener = callback;
-            return this;
-        }
-
-        /**
-         * Event builder.
-         *
-         * @param event the event
-         * @return the builder
-         */
-        public Builder event(@NonNull PubNubParam.Event event) {
-            pubNubParam.event = event;
             return this;
         }
 
