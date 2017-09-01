@@ -43,8 +43,8 @@ public class PubNubManager {
      * @return the builder
      */
     public static PubNubParam.Builder with(@NonNull Context context,
-                                           @NonNull PubNubParam.Event event, @NonNull PubnubConfiguration pubnubConfiguration) {
-        return new PubNubParam.Builder(context, event, pubnubConfiguration);
+                                           @NonNull PubNubParam.Event event) {
+        return new PubNubParam.Builder(context, event);
     }
 
     /**
@@ -55,8 +55,8 @@ public class PubNubManager {
      * @return the builder
      */
     public static PubNubParam.Builder with(@NonNull Activity context,
-                                           @NonNull PubNubParam.Event event, @NonNull PubnubConfiguration pubnubConfiguration) {
-        return new PubNubParam.Builder(context, event, pubnubConfiguration);
+                                           @NonNull PubNubParam.Event event) {
+        return new PubNubParam.Builder(context, event);
     }
 
 }

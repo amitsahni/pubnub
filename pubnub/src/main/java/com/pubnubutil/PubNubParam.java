@@ -18,7 +18,6 @@ import java.util.List;
 public class PubNubParam implements Serializable {
     private Context context;
     private Activity activity;
-    private PubnubConfiguration pubnubConfiguration;
     private Event event = Event.SUB;
     private String[] channels;
     private OnPushMessageListener listener;
@@ -161,10 +160,6 @@ public class PubNubParam implements Serializable {
         return dialog;
     }
 
-    protected PubnubConfiguration getPubnubConfiguration() {
-        return pubnubConfiguration;
-    }
-
     /**
      * The type Builder.
      */
@@ -180,11 +175,10 @@ public class PubNubParam implements Serializable {
          * @param event   the event
          */
         public Builder(@NonNull Context context,
-                       @NonNull PubNubParam.Event event, @NonNull PubnubConfiguration pubnubConfiguration) {
+                       @NonNull PubNubParam.Event event) {
             pubNubParam = new PubNubParam();
             pubNubParam.context = context;
             pubNubParam.event = event;
-            pubNubParam.pubnubConfiguration = pubnubConfiguration;
             PubNubConstant.BROADCAST = context.getPackageName() + ".pubnub";
             PubNubConstant.LOCAL_BROADCAST = context.getPackageName() + ".local.pubnub";
         }
@@ -196,12 +190,11 @@ public class PubNubParam implements Serializable {
          * @param event   the event
          */
         public Builder(@NonNull Activity context,
-                       @NonNull PubNubParam.Event event, @NonNull PubnubConfiguration pubnubConfiguration) {
+                       @NonNull PubNubParam.Event event) {
             pubNubParam = new PubNubParam();
             pubNubParam.context = context;
             pubNubParam.activity = context;
             pubNubParam.event = event;
-            pubNubParam.pubnubConfiguration = pubnubConfiguration;
             PubNubConstant.BROADCAST = context.getPackageName() + ".pubnub";
             PubNubConstant.LOCAL_BROADCAST = context.getPackageName() + ".local.pubnub";
         }
