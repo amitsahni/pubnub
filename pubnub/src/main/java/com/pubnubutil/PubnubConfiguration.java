@@ -11,7 +11,7 @@ public class PubnubConfiguration implements Serializable {
     private static String publish_key,
             subscribe_key,
             senderId;
-    private static boolean ssl_on, enableGCM;
+    private static boolean ssl_on, enableGCM, debuggable;
 
     public static String getPublish_key() {
         return publish_key;
@@ -29,11 +29,15 @@ public class PubnubConfiguration implements Serializable {
         return enableGCM;
     }
 
+    public static boolean isDebuggable() {
+        return debuggable;
+    }
+
     public static class Builder {
         private String publish_key,
                 subscribe_key,
                 senderId;
-        private boolean ssl_on, enableGCM;
+        private boolean ssl_on, enableGCM, debuggable;
 
         public Builder() {
         }
@@ -55,12 +59,18 @@ public class PubnubConfiguration implements Serializable {
             return this;
         }
 
+        public Builder isDebug(boolean debuggable) {
+            this.debuggable = debuggable;
+            return this;
+        }
+
         public void build() {
             PubnubConfiguration.publish_key = publish_key;
             PubnubConfiguration.subscribe_key = subscribe_key;
             PubnubConfiguration.ssl_on = ssl_on;
             PubnubConfiguration.enableGCM = enableGCM;
             PubnubConfiguration.senderId = senderId;
+            PubnubConfiguration.debuggable = debuggable;
 
         }
 

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -80,12 +81,12 @@ public class Pubnub {
             if (gcmRegId.isEmpty()) {
                 registerInBackground(pubNubParam);
             } else {
-                if (BuildConfig.DEBUG) {
+                if (PubnubConfiguration.isDebuggable()) {
                     Log.d(getClass().getSimpleName(), "Registration ID already exists: " + gcmRegId);
                 }
             }
         } else {
-            if (BuildConfig.DEBUG) {
+            if (PubnubConfiguration.isDebuggable()) {
                 Log.e(getClass().getSimpleName(), "No valid Google Play Services APK found.");
             }
         }
@@ -105,13 +106,13 @@ public class Pubnub {
                     enablePushNotificationsOnChannel(token, pubNubParam);
                     storeRegistrationId(pubNubParam.getContext(), token);
                     msg = "Device registered, registration ID: " + token;
-                    if (BuildConfig.DEBUG) {
+                    if (PubnubConfiguration.isDebuggable()) {
                         Log.d(getClass().getSimpleName(), msg);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                     msg = "Error :" + e.getMessage();
-                    if (BuildConfig.DEBUG) {
+                    if (PubnubConfiguration.isDebuggable()) {
                         Log.d(getClass().getSimpleName(), msg);
                     }
                 }
@@ -140,7 +141,7 @@ public class Pubnub {
                 .async(new PNCallback<PNPushAddChannelResult>() {
                     @Override
                     public void onResponse(PNPushAddChannelResult result, PNStatus status) {
-                        if (BuildConfig.DEBUG) {
+                        if (PubnubConfiguration.isDebuggable()) {
                             Log.d(getClass().getSimpleName(), result.toString());
                         }
                     }
@@ -155,7 +156,7 @@ public class Pubnub {
                 .async(new PNCallback<PNPushRemoveChannelResult>() {
                     @Override
                     public void onResponse(PNPushRemoveChannelResult result, PNStatus status) {
-                        if (BuildConfig.DEBUG) {
+                        if (PubnubConfiguration.isDebuggable()) {
                             Log.d(getClass().getSimpleName(), result.toString());
                         }
                     }
@@ -178,13 +179,13 @@ public class Pubnub {
                     token = "";
                     storeRegistrationId(pubNubParam.getContext(), token);
                     msg = "Device unRegistered";
-                    if (BuildConfig.DEBUG) {
+                    if (PubnubConfiguration.isDebuggable()) {
                         Log.d(getClass().getSimpleName(), msg);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                     msg = "Error :" + e.getMessage();
-                    if (BuildConfig.DEBUG) {
+                    if (PubnubConfiguration.isDebuggable()) {
                         Log.d(getClass().getSimpleName(), msg);
                     }
                 }
@@ -204,7 +205,7 @@ public class Pubnub {
                             PubNubConstant.PLAY_SERVICES_RESOLUTION_REQUEST).show();
                 }
             } else {
-                if (BuildConfig.DEBUG) {
+                if (PubnubConfiguration.isDebuggable()) {
                     Log.d(getClass().getSimpleName(), "This device is not supported.");
                 }
             }
@@ -241,7 +242,7 @@ public class Pubnub {
                 sPubnub.unsubscribe()
                         .channels(Arrays.asList(pubNubParam.getChannels()))
                         .execute();
-                if (BuildConfig.DEBUG) {
+                if (PubnubConfiguration.isDebuggable()) {
                     Log.d(getClass().getSimpleName(), "All SubScribed:" + sPubnub.getSubscribedChannels().toString());
                 }
                 break;
@@ -261,7 +262,7 @@ public class Pubnub {
                                 public void onResponse(PNPublishResult result, PNStatus status) {
                                     if (status.isError()) {
                                         // handle error
-                                        if (BuildConfig.DEBUG) {
+                                        if (PubnubConfiguration.isDebuggable()) {
                                             Log.d(getClass().getSimpleName(), "Publish:" + status.toString());
                                         }
                                         return;
@@ -302,7 +303,7 @@ public class Pubnub {
                                     }
                                     if (status.isError()) {
                                         // handle error
-                                        if (BuildConfig.DEBUG) {
+                                        if (PubnubConfiguration.isDebuggable()) {
                                             Log.d(getClass().getSimpleName(), "Publish:" + status.toString());
                                         }
                                         return;
@@ -399,7 +400,13 @@ public class Pubnub {
 
         @Override
         public void status(com.pubnub.api.PubNub pubnub, PNStatus status) {
-//            ApplicationUtils.Log.i(MessageFormat.format(FORMAT, status.getStatusCode(), status.getErrorData().getInformation()));
+            if (pubNubParam.listener != null) {
+                String channel = TextUtils.join(",", status.getAffectedChannels());
+                pubNubParam.listener.onSuccess(channel, status);
+            }
+            if (PubnubConfiguration.isDebuggable()) {
+                Log.d(getClass().getName(), "Status = " + status.toString());
+            }
             // the status object returned is always related to subscribe but could contain
             // information about subscribe, heartbeat, or errors
             // use the operationType to switch on different options
@@ -413,21 +420,21 @@ public class Pubnub {
                     switch (status.getCategory()) {
                         case PNConnectedCategory:
                             // this is expected for a subscribe, this means there is no error or issue whatsoever
-                            if (BuildConfig.DEBUG) {
+                            if (PubnubConfiguration.isDebuggable()) {
                                 Log.d(getClass().getSimpleName(), "PNConnectedCategory = " + status.getAffectedChannels());
                             }
                             break;
                         case PNReconnectedCategory:
                             // this usually occurs if subscribe temporarily fails but reconnects. This means
                             // there was an error but there is no longer any issue
-                            if (BuildConfig.DEBUG) {
+                            if (PubnubConfiguration.isDebuggable()) {
                                 Log.d(getClass().getSimpleName(), "PNReconnectedCategory = " + status.getAffectedChannels());
                             }
                             break;
                         case PNDisconnectedCategory:
                             // this is the expected category for an unsubscribe. This means there
                             // was no error in unsubscribing from everything
-                            if (BuildConfig.DEBUG) {
+                            if (PubnubConfiguration.isDebuggable()) {
                                 Log.d(getClass().getSimpleName(), "PNDisconnectedCategory = " + status.getAffectedChannels());
                             }
                             break;
@@ -439,14 +446,14 @@ public class Pubnub {
                             // channel and channel group configuration. This is another explicit error
                             break;
                         case PNAcknowledgmentCategory:
-                            if (BuildConfig.DEBUG) {
+                            if (PubnubConfiguration.isDebuggable()) {
                                 Log.d(getClass().getSimpleName(), "PNAcknowledgmentCategory = " + status.getAffectedChannels());
                             }
                             break;
                         default:
                             // More errors can be directly specified by creating explicit cases for other
                             // error categories of `PNStatusCategory` such as `PNTimeoutCategory` or `PNMalformedFilterExpressionCategory` or `PNDecryptionErrorCategory`
-                            if (BuildConfig.DEBUG) {
+                            if (PubnubConfiguration.isDebuggable()) {
                                 Log.d(getClass().getSimpleName(), "default = " + status.getAffectedChannels());
                             }
                             break;
@@ -470,7 +477,7 @@ public class Pubnub {
 
         @Override
         public void message(com.pubnub.api.PubNub pubnub, PNMessageResult message) {
-            if (BuildConfig.DEBUG) {
+            if (PubnubConfiguration.isDebuggable()) {
                 Log.d(getClass().getSimpleName(), "Message = " + MessageFormat.format(FORMAT, message.getChannel(), message.getMessage().toString()));
             }
             if (pubNubParam.getListener() != null) {
@@ -490,7 +497,7 @@ public class Pubnub {
                                 .putExtra(PubNubConstant.BUNDLE_CHANNEL, message.getChannel()));
 
             }
-            if (BuildConfig.DEBUG) {
+            if (PubnubConfiguration.isDebuggable()) {
                 Log.i("------", "---------------------------------------------------------------------------");
             }
         }
