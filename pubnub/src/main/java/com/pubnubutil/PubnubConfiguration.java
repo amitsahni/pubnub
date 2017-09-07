@@ -33,6 +33,10 @@ public class PubnubConfiguration implements Serializable {
         return debuggable;
     }
 
+    public static String getSenderId() {
+        return senderId;
+    }
+
     public static class Builder {
         private String publish_key,
                 subscribe_key,
