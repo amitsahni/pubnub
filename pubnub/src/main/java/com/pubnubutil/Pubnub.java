@@ -30,7 +30,6 @@ import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import com.pubnub.api.models.consumer.push.PNPushAddChannelResult;
 import com.pubnub.api.models.consumer.push.PNPushRemoveChannelResult;
-import com.punubutil.BuildConfig;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -75,9 +74,9 @@ public class Pubnub {
     }
 
     private void gcmRegister(PubNubParam pubNubParam) {
-        if (checkPlayServices(pubNubParam.getContext())) {
+        if (checkPlayServices(pubNubParam.context)) {
             String gcmRegId = "";
-            gcmRegId = getRegistrationId(pubNubParam.getContext());
+            gcmRegId = getRegistrationId(pubNubParam.context);
             if (gcmRegId.isEmpty()) {
                 registerInBackground(pubNubParam);
             } else {
@@ -100,11 +99,11 @@ public class Pubnub {
                 String token = "";
                 String msg = "";
                 try {
-                    InstanceID instanceID = InstanceID.getInstance(pubNubParam.getContext());
-                    token = instanceID.getToken(pubNubParam.getSenderId(),
+                    InstanceID instanceID = InstanceID.getInstance(pubNubParam.context);
+                    token = instanceID.getToken(pubNubParam.senderId,
                             GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                     enablePushNotificationsOnChannel(token, pubNubParam);
-                    storeRegistrationId(pubNubParam.getContext(), token);
+                    storeRegistrationId(pubNubParam.context, token);
                     msg = "Device registered, registration ID: " + token;
                     if (PubnubConfiguration.isDebuggable()) {
                         Log.d(getClass().getSimpleName(), msg);
@@ -135,7 +134,7 @@ public class Pubnub {
 
     private void enablePushNotificationsOnChannel(String token, PubNubParam pubNubParam) {
         sPubnub.addPushNotificationsOnChannels()
-                .channels(Arrays.asList(pubNubParam.getChannels()))
+                .channels(Arrays.asList(pubNubParam.channels))
                 .pushType(PNPushType.GCM)
                 .deviceId(token)
                 .async(new PNCallback<PNPushAddChannelResult>() {
@@ -150,7 +149,7 @@ public class Pubnub {
 
     private void disablePushNotificationsOnChannel(String token, PubNubParam pubNubParam) {
         sPubnub.removePushNotificationsFromChannels()
-                .channels(Arrays.asList(pubNubParam.getChannels()))
+                .channels(Arrays.asList(pubNubParam.channels))
                 .pushType(PNPushType.GCM)
                 .deviceId(token)
                 .async(new PNCallback<PNPushRemoveChannelResult>() {
@@ -171,13 +170,13 @@ public class Pubnub {
                 String token = "";
                 String msg = "";
                 try {
-                    InstanceID instanceID = InstanceID.getInstance(pubNubParam.getContext());
-                    instanceID.deleteToken(pubNubParam.getSenderId(),
+                    InstanceID instanceID = InstanceID.getInstance(pubNubParam.context);
+                    instanceID.deleteToken(pubNubParam.senderId,
                             GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-                    token = getRegistrationId(pubNubParam.getContext());
+                    token = getRegistrationId(pubNubParam.context);
                     disablePushNotificationsOnChannel(token, pubNubParam);
                     token = "";
-                    storeRegistrationId(pubNubParam.getContext(), token);
+                    storeRegistrationId(pubNubParam.context, token);
                     msg = "Device unRegistered";
                     if (PubnubConfiguration.isDebuggable()) {
                         Log.d(getClass().getSimpleName(), msg);
@@ -231,16 +230,16 @@ public class Pubnub {
      * @param pubNubParam the pub nub param
      */
     public Object handleEvent(final PubNubParam pubNubParam) {
-        switch (pubNubParam.getEvent()) {
+        switch (pubNubParam.event) {
             case SUB:
                 sPubnub.subscribe()
-                        .channels(Arrays.asList(pubNubParam.getChannels()))
+                        .channels(Arrays.asList(pubNubParam.channels))
                         .withPresence()
                         .execute();
                 break;
             case UNSUB:
                 sPubnub.unsubscribe()
-                        .channels(Arrays.asList(pubNubParam.getChannels()))
+                        .channels(Arrays.asList(pubNubParam.channels))
                         .execute();
                 if (PubnubConfiguration.isDebuggable()) {
                     Log.d(getClass().getSimpleName(), "All SubScribed:" + sPubnub.getSubscribedChannels().toString());
@@ -252,8 +251,8 @@ public class Pubnub {
             case SUB_LIST:
                 return sPubnub.getSubscribedChannels();
             case PUB:
-                for (String channel : pubNubParam.getChannels()) {
-                    sPubnub.publish().message(pubNubParam.getMessage())
+                for (String channel : pubNubParam.channels) {
+                    sPubnub.publish().message(pubNubParam.message)
                             .shouldStore(true)
                             .usePOST(true)
                             .channel(channel)
@@ -267,8 +266,8 @@ public class Pubnub {
                                         }
                                         return;
                                     }
-                                    if (pubNubParam.getListener() != null) {
-                                        pubNubParam.getListener().onSuccess(status.toString(), result);
+                                    if (pubNubParam.listener != null) {
+                                        pubNubParam.listener.onSuccess(status.toString(), result);
                                     }
                                 }
                             });
@@ -281,25 +280,25 @@ public class Pubnub {
                 unRegisterInBackground(pubNubParam);
                 break;
             case CHAT_HISTORY:
-                if (pubNubParam.getDialog() != null &&
-                        !pubNubParam.getDialog().isShowing()) {
-                    pubNubParam.getDialog().show();
+                if (pubNubParam.dialog != null &&
+                        !pubNubParam.dialog.isShowing()) {
+                    pubNubParam.dialog.show();
                 }
-                final int size = pubNubParam.getChannels().length;
+                final int size = pubNubParam.channels.length;
                 for (int i = 0; i < size; i++) {
                     sPubnub.history()
-                            .channel(pubNubParam.getChannels()[i])
-                            .count(pubNubParam.getCount() > 100 ? 100 : pubNubParam.getCount())
-                            .includeTimetoken(pubNubParam.isIncludeTimeToken())
-                            .reverse(pubNubParam.isReverse())
-                            .start(pubNubParam.getStart() > 0L ? pubNubParam.getStart() : null)
-                            .end(pubNubParam.getEnd() > 0L ? pubNubParam.getEnd() : null)
+                            .channel(pubNubParam.channels[i])
+                            .count(pubNubParam.count > 100 ? 100 : pubNubParam.count)
+                            .includeTimetoken(pubNubParam.includeTimeToken)
+                            .reverse(pubNubParam.reverse)
+                            .start(pubNubParam.start > 0L ? pubNubParam.start : null)
+                            .end(pubNubParam.end > 0L ? pubNubParam.end : null)
                             .async(new PNCallback<PNHistoryResult>() {
                                 @Override
                                 public void onResponse(PNHistoryResult result, PNStatus status) {
-                                    if (pubNubParam.getDialog() != null
-                                            && pubNubParam.getDialog().isShowing()) {
-                                        pubNubParam.getDialog().dismiss();
+                                    if (pubNubParam.dialog != null
+                                            && pubNubParam.dialog.isShowing()) {
+                                        pubNubParam.dialog.dismiss();
                                     }
                                     if (status.isError()) {
                                         // handle error
@@ -308,8 +307,8 @@ public class Pubnub {
                                         }
                                         return;
                                     }
-                                    if (pubNubParam.getListener() != null) {
-                                        pubNubParam.getListener().onSuccess(status.toString(), result);
+                                    if (pubNubParam.listener != null) {
+                                        pubNubParam.listener.onSuccess(status.toString(), result);
                                     }
                                 }
                             });
@@ -318,7 +317,7 @@ public class Pubnub {
             case HERE_NOW:
                 sPubnub.hereNow()
                         // tailor the next two lines to example
-                        .channels(Arrays.asList(pubNubParam.getChannels()))
+                        .channels(Arrays.asList(pubNubParam.channels))
                         .includeUUIDs(true)
                         .includeState(true)
                         .async(new PNCallback<PNHereNowResult>() {
@@ -328,15 +327,15 @@ public class Pubnub {
                                     // handle error
                                     return;
                                 }
-                                if (pubNubParam.getListener() != null) {
-                                    pubNubParam.getListener().onSuccess(status.toString(), result);
+                                if (pubNubParam.listener != null) {
+                                    pubNubParam.listener.onSuccess(status.toString(), result);
                                 }
                             }
                         });
                 break;
             case WHERE_NOW:
                 sPubnub.whereNow()
-                        .uuid(pubNubParam.getUuid())
+                        .uuid(pubNubParam.uuid)
                         .async(new PNCallback<PNWhereNowResult>() {
                             @Override
                             public void onResponse(PNWhereNowResult result, PNStatus status) {
@@ -344,16 +343,16 @@ public class Pubnub {
                                     // handle error
                                     return;
                                 }
-                                if (pubNubParam.getListener() != null) {
-                                    pubNubParam.getListener().onSuccess(status.toString(), result);
+                                if (pubNubParam.listener != null) {
+                                    pubNubParam.listener.onSuccess(status.toString(), result);
                                 }
                             }
                         });
                 break;
             case GET_PRESENCE:
                 sPubnub.getPresenceState()
-                        .channels(Arrays.asList(pubNubParam.getChannels())) // channels to fetch state for
-                        .uuid(pubNubParam.getUuid()) // uuid of user to fetch, or omit own uuid
+                        .channels(Arrays.asList(pubNubParam.channels)) // channels to fetch state for
+                        .uuid(pubNubParam.uuid) // uuid of user to fetch, or omit own uuid
                         .async(new PNCallback<PNGetStateResult>() {
                             @Override
                             public void onResponse(PNGetStateResult result, PNStatus status) {
@@ -361,16 +360,16 @@ public class Pubnub {
                                     // handle error
                                     return;
                                 }
-                                if (pubNubParam.getListener() != null) {
-                                    pubNubParam.getListener().onSuccess(status.toString(), result);
+                                if (pubNubParam.listener != null) {
+                                    pubNubParam.listener.onSuccess(status.toString(), result);
                                 }
                             }
                         });
                 break;
             case SET_PRESENCE:
                 sPubnub.setPresenceState()
-                        .channels(Arrays.asList(pubNubParam.getChannels()))  // apply on those channel groups
-                        .state(pubNubParam.getMessage()) // the new state
+                        .channels(Arrays.asList(pubNubParam.channels))  // apply on those channel groups
+                        .state(pubNubParam.message) // the new state
                         .async(new PNCallback<PNSetStateResult>() {
                             @Override
                             public void onResponse(PNSetStateResult result, PNStatus status) {
@@ -378,8 +377,8 @@ public class Pubnub {
                                     // handle error
                                     return;
                                 }
-                                if (pubNubParam.getListener() != null) {
-                                    pubNubParam.getListener().onSuccess(status.toString(), result);
+                                if (pubNubParam.listener != null) {
+                                    pubNubParam.listener.onSuccess(status.toString(), result);
                                 }
                             }
                         });
@@ -480,18 +479,18 @@ public class Pubnub {
             if (PubnubConfiguration.isDebuggable()) {
                 Log.d(getClass().getSimpleName(), "Message = " + MessageFormat.format(FORMAT, message.getChannel(), message.getMessage().toString()));
             }
-            if (pubNubParam.getListener() != null) {
-                pubNubParam.getListener().onSuccess(message.getChannel(), message.getMessage());
+            if (pubNubParam.listener != null) {
+                pubNubParam.listener.onSuccess(message.getChannel(), message.getMessage());
             }
-            if (pubNubParam.getContext() != null) {
+            if (pubNubParam.context != null) {
 
-                pubNubParam.getContext().sendBroadcast(
+                pubNubParam.context.sendBroadcast(
                         new Intent(PubNubConstant.BROADCAST)
                                 .putExtra(PubNubConstant.BUNDLE_MESSAGE, message.getMessage().toString())
                                 .putExtra(PubNubConstant.BUNDLE_CHANNEL, message.getChannel()));
                 // Local Broadcast
                 //send broadcast for application
-                LocalBroadcastManager.getInstance(pubNubParam.getContext())
+                LocalBroadcastManager.getInstance(pubNubParam.context)
                         .sendBroadcast(new Intent(PubNubConstant.LOCAL_BROADCAST)
                                 .putExtra(PubNubConstant.BUNDLE_MESSAGE, message.getMessage().toString())
                                 .putExtra(PubNubConstant.BUNDLE_CHANNEL, message.getChannel()));

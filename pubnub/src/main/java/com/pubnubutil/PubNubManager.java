@@ -43,9 +43,9 @@ public class PubNubManager {
      * @return the builder
      */
     @Deprecated
-    public static PubNubParam.Builder with(@NonNull Context context,
+    public static Builder with(@NonNull Context context,
                                            @NonNull PubNubParam.Event event) {
-        return new PubNubParam.Builder(context);
+        return new Builder(context);
     }
 
     /**
@@ -56,9 +56,9 @@ public class PubNubManager {
      * @return the builder
      */
     @Deprecated
-    public static PubNubParam.Builder with(@NonNull Activity context,
+    public static Builder with(@NonNull Activity context,
                                            @NonNull PubNubParam.Event event) {
-        return new PubNubParam.Builder(context);
+        return new Builder(context);
     }
 
     /**
@@ -67,8 +67,8 @@ public class PubNubManager {
      * @param context the context
      * @return the builder
      */
-    public static PubNubParam.Builder with(@NonNull Context context) {
-        return new PubNubParam.Builder(context);
+    public static Builder with(@NonNull Context context) {
+        return new Builder(context);
     }
 
     /**
@@ -77,8 +77,8 @@ public class PubNubManager {
      * @param context the context
      * @return the builder
      */
-    public static PubNubParam.Builder with(@NonNull Activity context) {
-        return new PubNubParam.Builder(context);
+    public static Builder with(@NonNull Activity context) {
+        return new Builder(context);
     }
 
 }
