@@ -39,6 +39,11 @@ public class HistoryBuilder extends PubSubBuilder {
         return (HistoryBuilder) super.callback(l);
     }
 
+    @Override
+    public HistoryBuilder taskId(int taskId) {
+        return (HistoryBuilder) super.taskId(taskId);
+    }
+
     public HistoryBuilder progressDialog(@NonNull Dialog progressDialog) {
         pubNubParam.dialog = progressDialog;
         return this;
@@ -68,6 +73,7 @@ public class HistoryBuilder extends PubSubBuilder {
         pubNubParam.end = end;
         return this;
     }
+
 
     @Override
     public void build() {

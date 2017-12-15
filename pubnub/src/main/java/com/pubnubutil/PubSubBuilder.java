@@ -48,5 +48,10 @@ public abstract class PubSubBuilder {
         return this;
     }
 
+    public PubSubBuilder taskId(int taskId) {
+        pubNubParam.taskId = taskId;
+        return this;
+    }
+
     public abstract void build();
 }

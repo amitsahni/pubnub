@@ -39,6 +39,11 @@ public class SubScribeBuilder extends PubSubBuilder {
     }
 
     @Override
+    public SubScribeBuilder taskId(int taskId) {
+        return (SubScribeBuilder) super.taskId(taskId);
+    }
+
+    @Override
     public void build() {
         Pubnub pubNub = new Pubnub(pubNubParam);
         pubNub.handleEvent(pubNubParam);

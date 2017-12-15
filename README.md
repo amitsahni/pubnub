@@ -16,17 +16,25 @@ PubnubUtil ![](https://jitpack.io/v/amitclickapps/pubnub-util.svg?style=flat-squ
                         .subScribe()
                         .channels(channels)
                         .callback(new PubNubParam.OnPushMessageListener() {
-                            @Override
-                            public void onSuccess(String channel, Object data) {
-                                if(data instanceof PNStatus){
-
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(String channel, String exception) {
-
-                            }
+                                            @Override
+                                            public void result(String channel, Object result, PNStatus status, int taskId) {
+                                                
+                                            }
+                        
+                                            @Override
+                                            public void status(String channel, PNStatus status) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void message(String channel, Object message) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void presence(String channel, PNPresenceEventResult presence) {
+                        
+                                            }
                         }).build();
 ```
 ### PubnubManager publish
@@ -37,15 +45,25 @@ PubnubUtil ![](https://jitpack.io/v/amitclickapps/pubnub-util.svg?style=flat-squ
                         .channels(channels)
                         .message(object)
                         .callback(new PubNubParam.OnPushMessageListener() {
-                            @Override
-                            public void onSuccess(String channel, Object data) {
-
-                            }
-
-                            @Override
-                            public void onFailure(String channel, String exception) {
-
-                            }
+                                            @Override
+                                            public void result(String channel, Object result, PNStatus status, int taskId) {
+                                                
+                                            }
+                        
+                                            @Override
+                                            public void status(String channel, PNStatus status) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void message(String channel, Object message) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void presence(String channel, PNPresenceEventResult presence) {
+                        
+                                            }
                         }).build();
 ```
 ### PubnubManager unSubscribe Channel
@@ -55,15 +73,25 @@ PubnubUtil ![](https://jitpack.io/v/amitclickapps/pubnub-util.svg?style=flat-squ
                         .unSubScribe()
                         .channels(channels)
                         .callback(new PubNubParam.OnPushMessageListener() {
-                            @Override
-                            public void onSuccess(String channel, Object data) {
-
-                            }
-
-                            @Override
-                            public void onFailure(String channel, String exception) {
-
-                            }
+                                            @Override
+                                            public void result(String channel, Object result, PNStatus status, int taskId) {
+                                                
+                                            }
+                        
+                                            @Override
+                                            public void status(String channel, PNStatus status) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void message(String channel, Object message) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void presence(String channel, PNPresenceEventResult presence) {
+                        
+                                            }
                         }).build();
 ```
 ### PubnubManager unSubscribeAllChannel
@@ -71,15 +99,25 @@ PubnubUtil ![](https://jitpack.io/v/amitclickapps/pubnub-util.svg?style=flat-squ
         PubNubManager.with(this)
                         .unSubScribeAll()
                         .callback(new PubNubParam.OnPushMessageListener() {
-                            @Override
-                            public void onSuccess(String channel, Object data) {
-
-                            }
-
-                            @Override
-                            public void onFailure(String channel, String exception) {
-
-                            }
+                                            @Override
+                                            public void result(String channel, Object result, PNStatus status, int taskId) {
+                                                
+                                            }
+                        
+                                            @Override
+                                            public void status(String channel, PNStatus status) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void message(String channel, Object message) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void presence(String channel, PNPresenceEventResult presence) {
+                        
+                                            }
                         }).build();
 ```
 ### PubnubManager SubscribedList
@@ -97,15 +135,25 @@ PubnubUtil ![](https://jitpack.io/v/amitclickapps/pubnub-util.svg?style=flat-squ
                         .historyCount(100)
                         .progressDialog(dialog)
                         .callback(new PubNubParam.OnPushMessageListener() {
-                            @Override
-                            public void onSuccess(String channel, Object data) {
-
-                            }
-
-                            @Override
-                            public void onFailure(String channel, String exception) {
-
-                            }
+                                            @Override
+                                            public void result(String channel, Object result, PNStatus status, int taskId) {
+                                                
+                                            }
+                        
+                                            @Override
+                                            public void status(String channel, PNStatus status) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void message(String channel, Object message) {
+                        
+                                            }
+                        
+                                            @Override
+                                            public void presence(String channel, PNPresenceEventResult presence) {
+                        
+                                            }
                         }).build();
 ```
 

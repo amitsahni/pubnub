@@ -3,12 +3,11 @@ package com.pubnubutil;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
+
+import com.pubnub.api.models.consumer.PNStatus;
+import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -23,6 +22,7 @@ public class PubNubParam implements Serializable {
     protected Object message;
     protected String senderId;
     protected String uuid = "";
+    protected int taskId;
 
     /*History*/
     protected int count;
@@ -85,77 +85,13 @@ public class PubNubParam implements Serializable {
      * The interface On push message listener.
      */
     public interface OnPushMessageListener {
-        /**
-         * On success.
-         *
-         * @param channel the channel
-         * @param data    the data
-         */
-        void onSuccess(String channel, Object data);
+        void result(String channel, Object result, PNStatus status, int taskId);
 
-        /**
-         * On failure.
-         *
-         * @param channel   the channel
-         * @param exception the exception
-         */
-// If there is an error, don't just keep trying to register.
-        void onFailure(String channel, String exception);
+        void status(String channel, PNStatus status);
+
+        void message(String channel, Object message);
+
+        void presence(String channel, PNPresenceEventResult presence);
     }
 
-//    public Context getContext() {
-//        return context;
-//    }
-//
-//    public Activity getActivity() {
-//        return activity;
-//    }
-//
-//    public Event getEvent() {
-//        return event;
-//    }
-//
-//    public String[] getChannels() {
-//        return channels;
-//    }
-//
-//    public OnPushMessageListener getListener() {
-//        return listener;
-//    }
-//
-//    public Object getMessage() {
-//        return message;
-//    }
-//
-//    public String getSenderId() {
-//        return senderId;
-//    }
-//
-//    public String getUuid() {
-//        return uuid;
-//    }
-//
-//    public int getCount() {
-//        return count;
-//    }
-//
-//    public boolean isIncludeTimeToken() {
-//        return includeTimeToken;
-//    }
-//
-//    public boolean isReverse() {
-//        return reverse;
-//    }
-//
-//    public Long getStart() {
-//        return start;
-//    }
-//
-//    public Long getEnd() {
-//        return end;
-//    }
-//
-//    public Dialog getDialog() {
-//        return dialog;
-//    }
 }
