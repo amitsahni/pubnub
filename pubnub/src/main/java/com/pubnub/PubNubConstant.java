@@ -1,4 +1,4 @@
-package com.pubnubutil;
+package com.pubnub;
 
 
 /**

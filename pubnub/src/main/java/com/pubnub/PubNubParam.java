@@ -1,28 +1,22 @@
-package com.pubnubutil;
+package com.pubnub;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 
-import com.pubnub.api.models.consumer.PNStatus;
-import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
-
-import java.io.Serializable;
+import com.pubnub.callback.OnResultListener;
+import com.pubnub.callback.OnSubscribeListener;
 
 
 /**
  * The type Pub nub param.
  */
-public class PubNubParam implements Serializable {
+public class PubNubParam {
     protected Context context;
-    protected Activity activity;
     protected Event event = Event.SUB;
     protected String[] channels;
-    protected OnPushMessageListener listener;
     protected Object message;
     protected String senderId;
     protected String uuid = "";
-    protected int taskId;
 
     /*History*/
     protected int count;
@@ -32,7 +26,7 @@ public class PubNubParam implements Serializable {
     protected Long end = 0L;
     protected Dialog dialog;
 
-    public enum Event {
+    enum Event {
         /**
          * Sub event.
          */
@@ -51,14 +45,6 @@ public class PubNubParam implements Serializable {
          * PUB
          */
         PUB,
-        /**
-         * EnableGCM
-         */
-        ENABLE_GCM,
-        /**
-         * Disable GCM
-         */
-        DISABLE_GCM,
         /**
          * CHAT_HISTORY
          */
@@ -81,17 +67,9 @@ public class PubNubParam implements Serializable {
         SET_PRESENCE
     }
 
-    /**
-     * The interface On push message listener.
-     */
-    public interface OnPushMessageListener {
-        void result(String channel, Object result, PNStatus status, int taskId);
-
-        void status(String channel, PNStatus status);
-
-        void message(String channel, Object message);
-
-        void presence(String channel, PNPresenceEventResult presence);
-    }
+    OnResultListener resultListener;
+    OnSubscribeListener statusListener;
+    OnSubscribeListener messageListener;
+    OnSubscribeListener presenceListener;
 
 }

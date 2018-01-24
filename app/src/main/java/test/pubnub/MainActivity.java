@@ -3,13 +3,15 @@ package test.pubnub;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
+import com.pubnub.PubNubManager;
+import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
+import com.pubnub.api.models.consumer.history.PNHistoryResult;
+import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
-import com.pubnubutil.PubNubManager;
-import com.pubnubutil.PubNubParam;
-import com.pubnubutil.PubnubConfiguration;
+import com.pubnub.callback.OnResultListener;
+import com.pubnub.callback.OnSubscribeListener;
 
 import butterknife.ButterKnife;
 
@@ -26,31 +28,66 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         String[] channels = new String[]{"channel1", "channel2"};
         PubNubManager.with(this)
-                .subScribe()
-                .channels(channels)
-                .callback(new PubNubParam.OnPushMessageListener() {
+                .subScribe(channels)
+                .messageCallback(new OnSubscribeListener<PNMessageResult>() {
                     @Override
-                    public void result(String channel, Object result, PNStatus status, int taskId) {
+                    public void result(String channel, PNMessageResult result) {
 
                     }
-
+                })
+                .presenceCallback(new OnSubscribeListener<PNPresenceEventResult>() {
                     @Override
-                    public void status(String channel, PNStatus status) {
+                    public void result(String channel, PNPresenceEventResult result) {
 
                     }
-
+                })
+                .statusCallback(new OnSubscribeListener<PNStatus>() {
                     @Override
-                    public void message(String channel, Object message) {
+                    public void result(String channel, PNStatus result) {
 
                     }
+                })
+                .build();
 
+        PubNubManager.with(this)
+                .history()
+                .historyCount(10)
+                .callback(new OnResultListener<PNHistoryResult>() {
                     @Override
-                    public void presence(String channel, PNPresenceEventResult presence) {
+                    public void result(PNHistoryResult result, PNStatus status) {
 
                     }
+                })
+                .build();
+        PubNubManager.with(this)
+                .publish("Message", "channel")
+                .callback(new OnResultListener<PNPublishResult>() {
+                    @Override
+                    public void result(PNPublishResult result, PNStatus status) {
 
+                    }
+                })
+                .build();
 
-                }).build();
+        PubNubManager.with(this)
+                .unSubScribe("channel")
+                .statusCallback(new OnSubscribeListener<PNStatus>() {
+                    @Override
+                    public void result(String channel, PNStatus result) {
+
+                    }
+                })
+                .build();
+
+        PubNubManager.with(this)
+                .unSubScribeAll()
+                .statusCallback(new OnSubscribeListener<PNStatus>() {
+                    @Override
+                    public void result(String channel, PNStatus result) {
+
+                    }
+                })
+                .build();
     }
 
 }

@@ -1,160 +1,85 @@
-PubnubUtil ![](https://jitpack.io/v/amitclickapps/pubnub-util.svg?style=flat-square)
 ------
 ### PubnubConfiguration
 #### If gcm enable then add gcm key in pubnub console
 ```
-        new PubnubConfiguration.Builder()
-                .keys("publish_key", "subscribe_key")
+        new PubnubConfiguration.Builder("publish_key", "subscribe_key")
                 .gcm(true, "senderId")
                 .isDebug(BuildConfig.DEBUG)
                 .build();
 ```
-### PubnubManager Subscribe
+### SubScribe
 ```
-        String[] channel = new String[]{"channel1", "channel2"};
+        String[] channels = new String[]{"channel1", "channel2"};
         PubNubManager.with(this)
-                        .subScribe()
-                        .channels(channels)
-                        .callback(new PubNubParam.OnPushMessageListener() {
-                                            @Override
-                                            public void result(String channel, Object result, PNStatus status, int taskId) {
-                                                
-                                            }
-                        
-                                            @Override
-                                            public void status(String channel, PNStatus status) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void message(String channel, Object message) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void presence(String channel, PNPresenceEventResult presence) {
-                        
-                                            }
-                        }).build();
+                .subScribe(channels)
+                .messageCallback(new OnSubscribeListener<PNMessageResult>() {
+                    @Override
+                    public void result(String channel, PNMessageResult result) {
+
+                    }
+                })
+                .presenceCallback(new OnSubscribeListener<PNPresenceEventResult>() {
+                    @Override
+                    public void result(String channel, PNPresenceEventResult result) {
+
+                    }
+                })
+                .statusCallback(new OnSubscribeListener<PNStatus>() {
+                    @Override
+                    public void result(String channel, PNStatus result) {
+
+                    }
+                })
+                .build();
 ```
-### PubnubManager publish
-```
-        String[] channel = new String[]{"channel1", "channel2"};
-        PubNubManager.with(this)
-                        .publish()
-                        .channels(channels)
-                        .message(object)
-                        .callback(new PubNubParam.OnPushMessageListener() {
-                                            @Override
-                                            public void result(String channel, Object result, PNStatus status, int taskId) {
-                                                
-                                            }
-                        
-                                            @Override
-                                            public void status(String channel, PNStatus status) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void message(String channel, Object message) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void presence(String channel, PNPresenceEventResult presence) {
-                        
-                                            }
-                        }).build();
-```
-### PubnubManager unSubscribe Channel
-```
-        String[] channel = new String[]{"channel1", "channel2"};
-        PubNubManager.with(this)
-                        .unSubScribe()
-                        .channels(channels)
-                        .callback(new PubNubParam.OnPushMessageListener() {
-                                            @Override
-                                            public void result(String channel, Object result, PNStatus status, int taskId) {
-                                                
-                                            }
-                        
-                                            @Override
-                                            public void status(String channel, PNStatus status) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void message(String channel, Object message) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void presence(String channel, PNPresenceEventResult presence) {
-                        
-                                            }
-                        }).build();
-```
-### PubnubManager unSubscribeAllChannel
+### History
 ```
         PubNubManager.with(this)
-                        .unSubScribeAll()
-                        .callback(new PubNubParam.OnPushMessageListener() {
-                                            @Override
-                                            public void result(String channel, Object result, PNStatus status, int taskId) {
-                                                
-                                            }
-                        
-                                            @Override
-                                            public void status(String channel, PNStatus status) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void message(String channel, Object message) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void presence(String channel, PNPresenceEventResult presence) {
-                        
-                                            }
-                        }).build();
+                .history()
+                .historyCount(10)
+                .callback(new OnResultListener<PNHistoryResult>() {
+                    @Override
+                    public void result(PNHistoryResult result, PNStatus status) {
+
+                    }
+                })
+                .build();
 ```
-### PubnubManager SubscribedList
+### Publish
 ```
-       List<String> subScribedList = PubNubManager.with(this)
-                       .getScribeList();
-```
-### PubnubManager history
-#### To enable history Storage & Playback in Pubnub
-```
-        String[] channel = new String[]{"channel1"};
         PubNubManager.with(this)
-                        .history()
-                        .channels(channels)
-                        .historyCount(100)
-                        .progressDialog(dialog)
-                        .callback(new PubNubParam.OnPushMessageListener() {
-                                            @Override
-                                            public void result(String channel, Object result, PNStatus status, int taskId) {
-                                                
-                                            }
-                        
-                                            @Override
-                                            public void status(String channel, PNStatus status) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void message(String channel, Object message) {
-                        
-                                            }
-                        
-                                            @Override
-                                            public void presence(String channel, PNPresenceEventResult presence) {
-                        
-                                            }
-                        }).build();
+                .publish("Message", "channel")
+                .callback(new OnResultListener<PNPublishResult>() {
+                    @Override
+                    public void result(PNPublishResult result, PNStatus status) {
+
+                    }
+                })
+                .build();
+```
+### UnSubScribe        
+```
+        PubNubManager.with(this)
+                .unSubScribe("channel")
+                .statusCallback(new OnSubscribeListener<PNStatus>() {
+                    @Override
+                    public void result(String channel, PNStatus result) {
+
+                    }
+                })
+                .build();
+```       
+### unSubScribeAll
+```        
+        PubNubManager.with(this)
+                .unSubScribeAll()
+                .statusCallback(new OnSubscribeListener<PNStatus>() {
+                    @Override
+                    public void result(String channel, PNStatus result) {
+
+                    }
+                })
+                .build();
 ```
 
 ### Following Points have to take care before using this
@@ -199,7 +124,7 @@ LocalBroadcastManager.getInstance(this).unregisterReceiver(localBroadCast);
 ```
 Download
 --------
-Add the JitPack repository to your root build.gradle: ![](https://jitpack.io/v/amitclickapps/pubnub-util.svg?style=flat-square)
+Add the JitPack repository to your root build.gradle
 
 ```groovy
 	allprojects {
@@ -211,6 +136,6 @@ Add the JitPack repository to your root build.gradle: ![](https://jitpack.io/v/a
 Add the Gradle dependency:
 ```groovy
 	dependencies {
-		compile 'com.github.amitclickapps:pubnub-util:latest'
+		compile 'com.github.amitsahni:pubnub:1.0.0-aplha'
 	}
 ```

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.amitclickapps'
-version = '1.0.5'
+group = 'com.github.amitsahni'
 
 android {
     compileSdkVersion 27
@@ -18,8 +17,8 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-annotations:27.0.2'
-    compile 'com.google.android.gms:play-services-gcm:11.6.0'
+    compile deps.annotations
+    compile deps.gcm
     /* Pubnub */
     compile group: 'com.pubnub', name: 'pubnub-gson', version: '4.16.0'
 

@@ -1,4 +1,4 @@
-package com.pubnubutil;
+package com.pubnub;
 
 import java.io.Serializable;
 
@@ -43,13 +43,9 @@ public class PubnubConfiguration implements Serializable {
                 senderId;
         private boolean ssl_on, enableGCM, debuggable;
 
-        public Builder() {
-        }
-
-        public Builder keys(String publish_key, String subscribe_key) {
+        public Builder(String publish_key, String subscribe_key) {
             this.publish_key = publish_key;
             this.subscribe_key = subscribe_key;
-            return this;
         }
 
         public Builder isSsl(boolean ssl) {

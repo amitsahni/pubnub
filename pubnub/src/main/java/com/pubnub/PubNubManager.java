@@ -1,6 +1,5 @@
-package com.pubnubutil;
+package com.pubnub;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -35,31 +34,6 @@ public class PubNubManager {
         PubNubConstant.BROADCAST = packageName + ".pubnub";
     }
 
-    /**
-     * With builder.
-     *
-     * @param context the context
-     * @param event   the event
-     * @return the builder
-     */
-    @Deprecated
-    public static Builder with(@NonNull Context context,
-                                           @NonNull PubNubParam.Event event) {
-        return new Builder(context);
-    }
-
-    /**
-     * With builder.
-     *
-     * @param context the context
-     * @param event   the event
-     * @return the builder
-     */
-    @Deprecated
-    public static Builder with(@NonNull Activity context,
-                                           @NonNull PubNubParam.Event event) {
-        return new Builder(context);
-    }
 
     /**
      * With builder.
@@ -71,14 +45,5 @@ public class PubNubManager {
         return new Builder(context);
     }
 
-    /**
-     * With builder.
-     *
-     * @param context the context
-     * @return the builder
-     */
-    public static Builder with(@NonNull Activity context) {
-        return new Builder(context);
-    }
 
 }
