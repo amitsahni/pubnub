@@ -18,10 +18,10 @@ android {
 }
 
 dependencies {
-    compile deps.annotations
-    compile deps.gcm
+    implementation deps.annotations
+    implementation deps.gcm
     /* Pubnub */
-    compile group: 'com.pubnub', name: 'pubnub-gson', version: '4.16.0'
+    implementation group: 'com.pubnub', name: 'pubnub-gson', version: '4.18.0'
 
 }
 
