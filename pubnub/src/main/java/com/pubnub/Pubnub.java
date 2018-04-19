@@ -56,10 +56,10 @@ public class Pubnub {
                     pnConfiguration.setPublishKey(PubnubConfiguration.getPublish_key());
                     pnConfiguration.setSecure(PubnubConfiguration.isSsl_on());
                     sPubnub = new com.pubnub.api.PubNub(pnConfiguration);
-                    sPubnub.addListener(new PubNubCallback(pubNubParam));
                 }
             }
         }
+        sPubnub.addListener(new PubNubCallback(pubNubParam));
         if (PubnubConfiguration.isEnableGCM()) {
             gcmRegister(pubNubParam);
         } else {
@@ -275,6 +275,10 @@ public class Pubnub {
                             break;
                         case PNUnexpectedDisconnectCategory:
                             // this is usually an issue with the internet connection, this is an error, handle appropriately
+                            pubnub.reconnect();
+                            if (PubnubConfiguration.isDebuggable()) {
+                                Log.d(getClass().getSimpleName(), "PNDisconnectedCategory = " + status.getAffectedChannels());
+                            }
                             break;
                         case PNAccessDeniedCategory:
                             // this means that PAM does allow this client to subscribe to this

@@ -339,7 +339,7 @@ public class Request {
             Pubnub pubNub = new Pubnub(param);
             List<String> list = pubNub.getPubNub().getSubscribedChannels();
             if (PubnubConfiguration.isDebuggable()) {
-                Log.d(getClass().getSimpleName(), "All SubScribed:" + list.toString());
+                Log.d(getClass().getSimpleName(), "All SubScribed:" + TextUtils.join(",", list));
             }
             return list;
         }

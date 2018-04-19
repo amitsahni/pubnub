@@ -2,6 +2,9 @@ package com.pubnub;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.pubnub.api.PubNub;
 
 
 /**
@@ -32,6 +35,11 @@ public class PubNubManager {
 
     public void setPackageName(String packageName) {
         PubNubConstant.BROADCAST = packageName + ".pubnub";
+    }
+
+    @Nullable
+    public PubNub getPubNub() {
+        return Pubnub.getPubnub();
     }
 
 

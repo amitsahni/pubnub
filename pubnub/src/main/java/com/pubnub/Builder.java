@@ -3,6 +3,8 @@ package com.pubnub;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 /**
  * Created by clickapps on 2/11/17.
  */
@@ -51,9 +53,9 @@ public class Builder {
         return new Request.SubscribeBuilder(pubNubParam);
     }
 
-    public Request.SubscribeBuilder subScribe() {
+    public List<String> subScribedChannel() {
         pubNubParam.event = PubNubParam.Event.SUB;
-        return new Request.SubscribeBuilder(pubNubParam);
+        return new Request.SubscribedBuilder(pubNubParam).build();
     }
 
     /***********************************/
