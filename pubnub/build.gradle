@@ -21,7 +21,7 @@ dependencies {
     implementation deps.annotations
     implementation deps.gcm
     /* Pubnub */
-    implementation group: 'com.pubnub', name: 'pubnub-gson', version: '4.19.0'
+    api group: 'com.pubnub', name: 'pubnub-gson', version: '4.19.0'
 
 }
 

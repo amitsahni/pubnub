@@ -36,6 +36,7 @@ import java.util.Arrays;
  */
 public class Pubnub {
     private static volatile PubNub sPubnub;
+    private static volatile PubNubCallback sPubNubCallback;
 
     private Pubnub() {
 
@@ -56,10 +57,12 @@ public class Pubnub {
                     pnConfiguration.setPublishKey(PubnubConfiguration.getPublish_key());
                     pnConfiguration.setSecure(PubnubConfiguration.isSsl_on());
                     sPubnub = new com.pubnub.api.PubNub(pnConfiguration);
+                    sPubNubCallback = new PubNubCallback();
+                    sPubnub.addListener(sPubNubCallback);
                 }
             }
         }
-        sPubnub.addListener(new PubNubCallback(pubNubParam));
+        sPubNubCallback.setParam(pubNubParam);
         if (PubnubConfiguration.isEnableGCM()) {
             gcmRegister(pubNubParam);
         } else {
@@ -229,7 +232,10 @@ public class Pubnub {
         private PubNubParam pubNubParam;
         private static final String FORMAT = "Channel : {0}\nMessage = {1}";
 
-        private PubNubCallback(PubNubParam param) {
+        private PubNubCallback() {
+        }
+
+        public void setParam(PubNubParam param) {
             this.pubNubParam = param;
         }
 
