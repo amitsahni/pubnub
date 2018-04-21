@@ -1,5 +1,6 @@
 package com.pubnub;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import okhttp3.logging.HttpLoggingInterceptor;
+
 
 /**
  * The type Pub nub.
@@ -56,13 +59,17 @@ public class Pubnub {
                     pnConfiguration.setSubscribeKey(PubnubConfiguration.getSubscribe_key());
                     pnConfiguration.setPublishKey(PubnubConfiguration.getPublish_key());
                     pnConfiguration.setSecure(PubnubConfiguration.isSsl_on());
+                    HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+                    httpLoggingInterceptor.setLevel(PubnubConfiguration.isDebuggable() ?
+                            HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+                    pnConfiguration.setHttpLoggingInterceptor(httpLoggingInterceptor);
                     sPubnub = new com.pubnub.api.PubNub(pnConfiguration);
                     sPubNubCallback = new PubNubCallback();
                     sPubnub.addListener(sPubNubCallback);
                 }
             }
         }
-        sPubNubCallback.setParam(pubNubParam);
+        sPubNubCallback.addPubNubParam(pubNubParam);
         if (PubnubConfiguration.isEnableGCM()) {
             gcmRegister(pubNubParam);
         } else {
@@ -235,7 +242,7 @@ public class Pubnub {
         private PubNubCallback() {
         }
 
-        public void setParam(PubNubParam param) {
+        public void addPubNubParam(PubNubParam param) {
             this.pubNubParam = param;
         }
 
@@ -246,7 +253,7 @@ public class Pubnub {
                 pubNubParam.statusListener.result(channel, status);
             }
             if (PubnubConfiguration.isDebuggable()) {
-                Log.d(getClass().getName(), "Status = " + status.toString());
+                Log.d("status", "---------------------------------------------------------------------------");
             }
             // the status object returned is always related to subscribe but could contain
             // information about subscribe, heartbeat, or errors
@@ -322,9 +329,6 @@ public class Pubnub {
 
         @Override
         public void message(com.pubnub.api.PubNub pubnub, PNMessageResult message) {
-            if (PubnubConfiguration.isDebuggable()) {
-                Log.d(getClass().getSimpleName(), "Message = " + MessageFormat.format(FORMAT, message.getChannel(), message.getMessage().toString()));
-            }
             if (pubNubParam.messageListener != null) {
                 pubNubParam.messageListener.result(message.getChannel(), message);
             }
@@ -343,14 +347,14 @@ public class Pubnub {
 
             }
             if (PubnubConfiguration.isDebuggable()) {
-                Log.i("------", "---------------------------------------------------------------------------");
+                Log.d("message", "---------------------------------------------------------------------------");
             }
         }
 
         @Override
         public void presence(com.pubnub.api.PubNub pubnub, PNPresenceEventResult presence) {
             if (PubnubConfiguration.isDebuggable()) {
-                Log.d(getClass().getSimpleName(), "Presence = " + MessageFormat.format(FORMAT, presence.getChannel(), presence.getState().toString()));
+                Log.d("presence", "---------------------------------------------------------------------------");
             }
             if (pubNubParam.presenceListener != null) {
                 pubNubParam.presenceListener.result(presence.getChannel(), presence);

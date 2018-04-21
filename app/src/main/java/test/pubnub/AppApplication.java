@@ -14,7 +14,7 @@ public class AppApplication extends Application {
     public void onCreate() {
         super.onCreate();
         new PubnubConfiguration.Builder("", "sub-c-67844f3e-3bca-11e8-a2e8-d2288b7dcaaf")
-                .gcm(true, "senderId")
+              //  .gcm(true, "senderId")
                 .isSsl(false)
                 .isDebug(true)
                 .build();
