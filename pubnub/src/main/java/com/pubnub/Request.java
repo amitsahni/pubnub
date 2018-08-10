@@ -282,6 +282,7 @@ public class Request {
             return (T) this;
         }
 
+        @Deprecated
         public T statusCallback(@NonNull OnSubscribeListener<PNStatus> l) {
             param.statusListener = l;
             return (T) this;

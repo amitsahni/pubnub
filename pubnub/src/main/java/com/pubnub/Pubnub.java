@@ -1,6 +1,5 @@
 package com.pubnub;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,9 +26,9 @@ import com.pubnub.api.models.consumer.push.PNPushAddChannelResult;
 import com.pubnub.api.models.consumer.push.PNPushRemoveChannelResult;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -237,6 +236,7 @@ public class Pubnub {
     @SuppressWarnings("unchecked")
     private class PubNubCallback extends SubscribeCallback {
         private PubNubParam pubNubParam;
+        private List<PubNubParam> list = new ArrayList<>();
         private static final String FORMAT = "Channel : {0}\nMessage = {1}";
 
         private PubNubCallback() {
@@ -244,13 +244,21 @@ public class Pubnub {
 
         public void addPubNubParam(PubNubParam param) {
             this.pubNubParam = param;
+            if (pubNubParam.messageListener != null
+                    || pubNubParam.presenceListener != null
+                    || pubNubParam.resultListener != null) {
+                list.add(pubNubParam);
+            }
+            Log.d("list", "" + list.size());
         }
 
         @Override
         public void status(com.pubnub.api.PubNub pubnub, PNStatus status) {
-            if (pubNubParam.statusListener != null) {
-                String channel = TextUtils.join(",", status.getAffectedChannels());
-                pubNubParam.statusListener.result(channel, status);
+            for (PubNubParam pubNubParam : list) {
+                if (pubNubParam.statusListener != null) {
+                    String channel = TextUtils.join(",", status.getAffectedChannels());
+                    pubNubParam.statusListener.result(channel, status);
+                }
             }
             if (PubnubConfiguration.isDebuggable()) {
                 Log.d("status", "---------------------------------------------------------------------------");
@@ -329,9 +337,6 @@ public class Pubnub {
 
         @Override
         public void message(com.pubnub.api.PubNub pubnub, PNMessageResult message) {
-            if (pubNubParam.messageListener != null) {
-                pubNubParam.messageListener.result(message.getChannel(), message);
-            }
             if (pubNubParam.context != null) {
 
                 pubNubParam.context.sendBroadcast(
@@ -346,6 +351,11 @@ public class Pubnub {
                                 .putExtra(PubNubConstant.BUNDLE_CHANNEL, message.getChannel()));
 
             }
+            for (PubNubParam pubNubParam : list) {
+                if (pubNubParam.messageListener != null) {
+                    pubNubParam.messageListener.result(message.getChannel(), message);
+                }
+            }
             if (PubnubConfiguration.isDebuggable()) {
                 Log.d("message", "---------------------------------------------------------------------------");
             }
@@ -356,8 +366,10 @@ public class Pubnub {
             if (PubnubConfiguration.isDebuggable()) {
                 Log.d("presence", "---------------------------------------------------------------------------");
             }
-            if (pubNubParam.presenceListener != null) {
-                pubNubParam.presenceListener.result(presence.getChannel(), presence);
+            for (PubNubParam pubNubParam : list) {
+                if (pubNubParam.presenceListener != null) {
+                    pubNubParam.presenceListener.result(presence.getChannel(), presence);
+                }
             }
         }
     }
