@@ -14,6 +14,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.google.gson.Gson;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.callbacks.PNCallback;
@@ -24,6 +25,7 @@ import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import com.pubnub.api.models.consumer.push.PNPushAddChannelResult;
 import com.pubnub.api.models.consumer.push.PNPushRemoveChannelResult;
+import com.pubnub.callback.OnSubscribeListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -236,7 +238,7 @@ public class Pubnub {
     @SuppressWarnings("unchecked")
     private class PubNubCallback extends SubscribeCallback {
         private PubNubParam pubNubParam;
-        private List<PubNubParam> list = new ArrayList<>();
+        private List<OnSubscribeListener> messageListenerList = new ArrayList<>();
         private static final String FORMAT = "Channel : {0}\nMessage = {1}";
 
         private PubNubCallback() {
@@ -244,21 +246,13 @@ public class Pubnub {
 
         public void addPubNubParam(PubNubParam param) {
             this.pubNubParam = param;
-            if (pubNubParam.messageListener != null
-                    || pubNubParam.presenceListener != null
-                    || pubNubParam.resultListener != null) {
-                list.add(pubNubParam);
-            }
-            Log.d("list", "" + list.size());
         }
 
         @Override
         public void status(com.pubnub.api.PubNub pubnub, PNStatus status) {
-            for (PubNubParam pubNubParam : list) {
-                if (pubNubParam.statusListener != null) {
-                    String channel = TextUtils.join(",", status.getAffectedChannels());
-                    pubNubParam.statusListener.result(channel, status);
-                }
+            if (pubNubParam.statusListener != null) {
+                String channel = TextUtils.join(",", status.getAffectedChannels());
+                pubNubParam.statusListener.result(channel, status);
             }
             if (PubnubConfiguration.isDebuggable()) {
                 Log.d("status", "---------------------------------------------------------------------------");
@@ -347,14 +341,11 @@ public class Pubnub {
                 //send broadcast for application
                 LocalBroadcastManager.getInstance(pubNubParam.context)
                         .sendBroadcast(new Intent(PubNubConstant.LOCAL_BROADCAST)
-                                .putExtra(PubNubConstant.BUNDLE_MESSAGE, message.getMessage().toString())
-                                .putExtra(PubNubConstant.BUNDLE_CHANNEL, message.getChannel()));
+                                .putExtra(PubNubConstant.BUNDLE_MESSAGE, new Gson().toJson(message)));
 
             }
-            for (PubNubParam pubNubParam : list) {
-                if (pubNubParam.messageListener != null) {
-                    pubNubParam.messageListener.result(message.getChannel(), message);
-                }
+            if (pubNubParam.messageListener != null) {
+                pubNubParam.messageListener.result(message.getChannel(), message);
             }
             if (PubnubConfiguration.isDebuggable()) {
                 Log.d("message", "---------------------------------------------------------------------------");
@@ -366,11 +357,12 @@ public class Pubnub {
             if (PubnubConfiguration.isDebuggable()) {
                 Log.d("presence", "---------------------------------------------------------------------------");
             }
-            for (PubNubParam pubNubParam : list) {
-                if (pubNubParam.presenceListener != null) {
-                    pubNubParam.presenceListener.result(presence.getChannel(), presence);
-                }
+            if (pubNubParam.presenceListener != null) {
+                pubNubParam.presenceListener.result(presence.getChannel(), presence);
             }
+            LocalBroadcastManager.getInstance(pubNubParam.context)
+                    .sendBroadcast(new Intent(PubNubConstant.BROADCAST + ".presence")
+                            .putExtra(PubNubConstant.BUNDLE_MESSAGE, new Gson().toJson(presence)));
         }
     }
 }

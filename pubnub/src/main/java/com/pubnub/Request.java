@@ -226,6 +226,7 @@ public class Request {
         /*
          *  <PNStatus>
          */
+        @Deprecated
         public T statusCallback(@NonNull OnSubscribeListener<PNStatus> l) {
             param.statusListener = l;
             return (T) this;
@@ -234,6 +235,7 @@ public class Request {
         /*
          *  <PNMessageResult>
          */
+        @Deprecated
         public T messageCallback(@NonNull OnSubscribeListener<PNMessageResult> l) {
             param.messageListener = l;
             return (T) this;
@@ -242,6 +244,7 @@ public class Request {
         /*
          *  <PNPresenceEventResult>
          */
+        @Deprecated
         public T presenceCallback(@NonNull OnSubscribeListener<PNPresenceEventResult> l) {
             param.presenceListener = l;
             return (T) this;
@@ -308,6 +311,7 @@ public class Request {
             this.param = param;
         }
 
+        @Deprecated
         public T statusCallback(@NonNull OnSubscribeListener<PNStatus> l) {
             param.statusListener = l;
             return (T) this;
@@ -330,7 +334,7 @@ public class Request {
             this.param = param;
         }
 
-
+        @Deprecated
         public T statusCallback(@NonNull OnSubscribeListener<PNStatus> l) {
             param.statusListener = l;
             return (T) this;
@@ -372,8 +376,8 @@ public class Request {
         }
 
         /*
-        *  <PNHereNowResult>
-        */
+         *  <PNHereNowResult>
+         */
         public T callback(@NonNull OnResultListener<PNHereNowResult> l) {
             param.resultListener = l;
             return (T) this;
@@ -417,8 +421,8 @@ public class Request {
         }
 
         /*
-        *  <PNWhereNowResult>
-        */
+         *  <PNWhereNowResult>
+         */
         public T callback(@NonNull OnResultListener<PNWhereNowResult> l) {
             param.resultListener = l;
             return (T) this;

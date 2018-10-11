@@ -12,24 +12,6 @@
         String[] channels = new String[]{"channel1", "channel2"};
         PubNubManager.with(this)
                 .subScribe(channels)
-                .messageCallback(new OnSubscribeListener<PNMessageResult>() {
-                    @Override
-                    public void result(String channel, PNMessageResult result) {
-
-                    }
-                })
-                .presenceCallback(new OnSubscribeListener<PNPresenceEventResult>() {
-                    @Override
-                    public void result(String channel, PNPresenceEventResult result) {
-
-                    }
-                })
-                .statusCallback(new OnSubscribeListener<PNStatus>() {
-                    @Override
-                    public void result(String channel, PNStatus result) {
-
-                    }
-                })
                 .build();
 ```
 ### History
@@ -61,24 +43,12 @@
 ```
         PubNubManager.with(this)
                 .unSubScribe("channel")
-                .statusCallback(new OnSubscribeListener<PNStatus>() {
-                    @Override
-                    public void result(String channel, PNStatus result) {
-
-                    }
-                })
                 .build();
 ```       
 ### unSubScribeAll
 ```        
         PubNubManager.with(this)
                 .unSubScribeAll()
-                .statusCallback(new OnSubscribeListener<PNStatus>() {
-                    @Override
-                    public void result(String channel, PNStatus result) {
-
-                    }
-                })
                 .build();
 ```
 
@@ -122,6 +92,34 @@ LocalBroadcastManager.getInstance(this).registerReceiver(localBroadCast, intentF
 ```
 LocalBroadcastManager.getInstance(this).unregisterReceiver(localBroadCast);
 ```
+#### Another Way
+
+Using inside Activity/Fragment
+```aidl
+MessageLiveData messageLiveData = new MessageLiveData(this, getPackageName());
+        messageLiveData.observe(this, new Observer<PNMessageResult>() {
+            @Override
+            public void onChanged(@NonNull PNMessageResult pnMessageResult) {
+                Log.i(getLocalClassName(), "Channel Observe = " + pnMessageResult.getChannel());
+                Log.i(getLocalClassName(), "Message Observe = " + pnMessageResult.getMessage().getAsString());
+            }
+        });
+```
+Using inside Application Class
+```aidl
+MessageLiveData messageLiveData = new MessageLiveData(this, getPackageName());
+        messageLiveData.observeForever(new Observer<PNMessageResult>() {
+            @Override
+            public void onChanged(@NonNull PNMessageResult pnMessageResult) {
+                Log.i(TAG, "Channel Observe = " + pnMessageResult.getChannel());
+                Log.i(TAG, "Message Observe = " + pnMessageResult.getMessage().getAsString());
+            }
+        });
+```
+
+
+
+
 Download
 --------
 Add the JitPack repository to your root build.gradle
