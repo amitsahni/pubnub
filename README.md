@@ -63,40 +63,11 @@
             </intent-filter>
         </receiver>
 ```
-#### When Internet on/off this broadcast notified here have to subscribe all channel again. Because when internet off all channels are auto unSubscribed. For Subscribe again Either use Intent Service from BroadCastReceiver
-```
-<receiver android:name=".InternetBraodcast">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-```
-#### If need Local Broadcast on specific screen use below code
-```
-private BroadcastReceiver localBroadCast= new BroadcastReceiver() {
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-
-    }
-};
-```
-#### Register
-```
-IntentFilter intentFilter = new IntentFilter(PubNubConstant.LOCAL_BROADCAST);
-LocalBroadcastManager.getInstance(this).registerReceiver(localBroadCast, intentFilter);
-```
-
-
-#### UnRegister
-```
-LocalBroadcastManager.getInstance(this).unregisterReceiver(localBroadCast);
-```
-#### Another Way
+#### Handle Message
 
 Using inside Activity/Fragment
 ```aidl
-MessageLiveData messageLiveData = new MessageLiveData(this, getPackageName());
+LocalMessageLiveData messageLiveData = new LocalMessageLiveData(this);
         messageLiveData.observe(this, new Observer<PNMessageResult>() {
             @Override
             public void onChanged(@NonNull PNMessageResult pnMessageResult) {
@@ -107,12 +78,23 @@ MessageLiveData messageLiveData = new MessageLiveData(this, getPackageName());
 ```
 Using inside Application Class
 ```aidl
-MessageLiveData messageLiveData = new MessageLiveData(this, getPackageName());
+GlobalMessageLiveData globalMessageLiveData = GlobalMessageLiveData.getInstance();
         messageLiveData.observeForever(new Observer<PNMessageResult>() {
             @Override
             public void onChanged(@NonNull PNMessageResult pnMessageResult) {
                 Log.i(TAG, "Channel Observe = " + pnMessageResult.getChannel());
                 Log.i(TAG, "Message Observe = " + pnMessageResult.getMessage().getAsString());
+            }
+        });
+```
+
+#### Handle Presence
+```aidl
+PresenceLiveData presenceLiveData = new PresenceLiveData(this);
+        presenceLiveData.observe(this, new Observer<PNPresenceEventResult>() {
+            @Override
+            public void onChanged(@NonNull PNPresenceEventResult pnPresenceEventResult) {
+                Log.i(getLocalClassName(), "Channel Observe = " + pnPresenceEventResult.getChannel());
             }
         });
 ```

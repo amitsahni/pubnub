@@ -11,17 +11,16 @@ import com.google.gson.Gson;
 import com.pubnub.PubNubConstant;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 
-public class MessageLiveData extends LiveData<PNMessageResult> {
+public class LocalMessageLiveData extends LiveData<PNMessageResult> {
     private Context context;
     private String action;
 
     /**
      * @param context
-     * @param action  package Name
      */
-    public MessageLiveData(Context context, String action) {
+    public LocalMessageLiveData(Context context) {
         this.context = context;
-        this.action = action + ".local.pubnub";
+        this.action = context.getPackageName() + ".local.pubnub";
     }
 
     @Override

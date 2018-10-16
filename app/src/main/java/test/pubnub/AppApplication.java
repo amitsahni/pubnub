@@ -2,14 +2,16 @@ package test.pubnub;
 
 import android.app.Application;
 import android.arch.lifecycle.Observer;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.pubnub.PubnubConfiguration;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
-import com.pubnub.callback.MessageLiveData;
+import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
+import com.pubnub.callback.GlobalMessageLiveData;
+import com.pubnub.callback.LocalMessageLiveData;
+import com.pubnub.callback.PresenceLiveData;
 
 /**
  * Created by clickapps on 1/9/17.
@@ -26,12 +28,27 @@ public class AppApplication extends Application {
                 .isDebug(false)
                 .build();
 
-        new MessageLiveData(this, getPackageName())
+        new LocalMessageLiveData(this)
                 .observeForever(new Observer<PNMessageResult>() {
                     @Override
                     public void onChanged(@NonNull PNMessageResult pnMessageResult) {
                         Log.i(AppApplication.class.getSimpleName(), "onChanged = " + pnMessageResult.getMessage().getAsString());
                     }
                 });
+
+        new PresenceLiveData(this).observeForever(new Observer<PNPresenceEventResult>() {
+            @Override
+            public void onChanged(@Nullable PNPresenceEventResult pnPresenceEventResult) {
+                Log.i(AppApplication.class.getSimpleName(), "Channel Observe = " + pnPresenceEventResult.getChannel());
+            }
+        });
+
+        GlobalMessageLiveData.getInstance().observeForever(new Observer<PNMessageResult>() {
+            @Override
+            public void onChanged(@Nullable PNMessageResult pnMessageResult) {
+                pnMessageResult.getMessage().getAsString();
+            }
+        });
+
     }
 }

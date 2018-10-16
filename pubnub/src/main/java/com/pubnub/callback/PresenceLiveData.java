@@ -17,11 +17,10 @@ public class PresenceLiveData extends LiveData<PNPresenceEventResult> {
 
     /**
      * @param context
-     * @param action  unique package Name
      */
-    public PresenceLiveData(Context context, String action) {
+    public PresenceLiveData(Context context) {
         this.context = context;
-        this.action = action + ".presence";
+        this.action = context.getPackageName() + ".pubnub.presence";
     }
 
     @Override

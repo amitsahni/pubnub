@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,10 +12,8 @@ import com.pubnub.PubNubManager;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
-import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
-import com.pubnub.callback.MessageLiveData;
+import com.pubnub.callback.LocalMessageLiveData;
 import com.pubnub.callback.OnResultListener;
-import com.pubnub.callback.OnSubscribeListener;
 
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        MessageLiveData messageLiveData = new MessageLiveData(this, getPackageName());
+        LocalMessageLiveData messageLiveData = new LocalMessageLiveData(this);
         messageLiveData.observe(this, new Observer<PNMessageResult>() {
             @Override
             public void onChanged(@NonNull PNMessageResult pnMessageResult) {

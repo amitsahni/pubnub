@@ -25,6 +25,7 @@ import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import com.pubnub.api.models.consumer.push.PNPushAddChannelResult;
 import com.pubnub.api.models.consumer.push.PNPushRemoveChannelResult;
+import com.pubnub.callback.GlobalMessageLiveData;
 import com.pubnub.callback.OnSubscribeListener;
 
 import java.io.IOException;
@@ -344,6 +345,9 @@ public class Pubnub {
                                 .putExtra(PubNubConstant.BUNDLE_MESSAGE, new Gson().toJson(message)));
 
             }
+
+            GlobalMessageLiveData.getInstance().postValue(message);
+
             if (pubNubParam.messageListener != null) {
                 pubNubParam.messageListener.result(message.getChannel(), message);
             }
