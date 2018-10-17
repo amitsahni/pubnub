@@ -76,17 +76,6 @@ LocalMessageLiveData messageLiveData = new LocalMessageLiveData(this);
             }
         });
 ```
-Using inside Application Class
-```aidl
-GlobalMessageLiveData globalMessageLiveData = GlobalMessageLiveData.getInstance();
-        messageLiveData.observeForever(new Observer<PNMessageResult>() {
-            @Override
-            public void onChanged(@NonNull PNMessageResult pnMessageResult) {
-                Log.i(TAG, "Channel Observe = " + pnMessageResult.getChannel());
-                Log.i(TAG, "Message Observe = " + pnMessageResult.getMessage().getAsString());
-            }
-        });
-```
 
 #### Handle Presence
 ```aidl
@@ -116,6 +105,6 @@ Add the JitPack repository to your root build.gradle
 Add the Gradle dependency:
 ```groovy
 	dependencies {
-		compile 'com.github.amitsahni:pubnub:1.0.0-aplha'
+		compile 'com.github.amitsahni:pubnub:1.0.2'
 	}
 ```

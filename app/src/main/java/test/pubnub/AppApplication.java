@@ -9,7 +9,6 @@ import android.util.Log;
 import com.pubnub.PubnubConfiguration;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
-import com.pubnub.callback.GlobalMessageLiveData;
 import com.pubnub.callback.LocalMessageLiveData;
 import com.pubnub.callback.PresenceLiveData;
 
@@ -42,13 +41,5 @@ public class AppApplication extends Application {
                 Log.i(AppApplication.class.getSimpleName(), "Channel Observe = " + pnPresenceEventResult.getChannel());
             }
         });
-
-        GlobalMessageLiveData.getInstance().observeForever(new Observer<PNMessageResult>() {
-            @Override
-            public void onChanged(@Nullable PNMessageResult pnMessageResult) {
-                pnMessageResult.getMessage().getAsString();
-            }
-        });
-
     }
 }
