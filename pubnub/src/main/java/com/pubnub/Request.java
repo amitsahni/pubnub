@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.pubnub.api.builder.SubscribeBuilder;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
@@ -201,6 +202,7 @@ public class Request {
     /********************************************************************/
     public static class SubscribeBuilder<T extends SubscribeBuilder> implements IPubnubProperty<T> {
         private PubNubParam param;
+        private boolean isWithPresence = false;
 
         public SubscribeBuilder(PubNubParam param) {
             this.param = param;
@@ -250,13 +252,20 @@ public class Request {
             return (T) this;
         }
 
+        public T withPresence() {
+            isWithPresence = true;
+            return (T) this;
+        }
+
         @Override
         public void build() {
             Pubnub pubNub = new Pubnub(param);
-            pubNub.getPubNub().subscribe()
-                    .channels(param.channels == null ? new ArrayList<String>() : Arrays.asList(param.channels))
-                    .withPresence()
-                    .execute();
+            com.pubnub.api.builder.SubscribeBuilder subscribeBuilder = pubNub.getPubNub().subscribe();
+            subscribeBuilder.channels(param.channels == null ? new ArrayList<String>() : Arrays.asList(param.channels));
+            if (isWithPresence) {
+                subscribeBuilder.withPresence();
+            }
+            subscribeBuilder.execute();
         }
     }
 
