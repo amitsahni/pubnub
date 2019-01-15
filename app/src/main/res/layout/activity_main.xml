@@ -5,11 +5,40 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <TextView
+    <Button
+        android:id="@+id/subscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Listing"
-        android:textColor="@android:color/black" />
+        android:text="Subscribe(pubnubTesting)"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/unSubscribe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UnSubscribe(pubnubTesting)"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/unSubscribeAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UnSubscribeAll"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/publish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Publish(pubnubTesting)"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History"
+        android:textColor="@android:color/white" />
 
 
 </LinearLayout>

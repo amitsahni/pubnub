@@ -1,5 +1,8 @@
 package com.pubnub;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +15,10 @@ public class PubnubConfiguration implements Serializable {
             subscribe_key,
             senderId;
     private static boolean ssl_on, enableGCM, debuggable;
+
+    private static Gson gson = new GsonBuilder()
+            .disableHtmlEscaping()
+            .setPrettyPrinting().create();
 
     public static String getPublish_key() {
         return publish_key;
@@ -37,6 +44,10 @@ public class PubnubConfiguration implements Serializable {
         return senderId;
     }
 
+    public static Gson gson() {
+        return gson;
+    }
+
     public static class Builder {
         private String publish_key,
                 subscribe_key,
@@ -53,6 +64,7 @@ public class PubnubConfiguration implements Serializable {
             return this;
         }
 
+        @Deprecated
         public Builder gcm(boolean gcm, String senderId) {
             this.enableGCM = gcm;
             this.senderId = senderId;

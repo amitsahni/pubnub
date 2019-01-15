@@ -1,5 +1,7 @@
 package com.pubnub.callback;
 
+import android.support.annotation.Nullable;
+
 import com.pubnub.api.models.consumer.PNStatus;
 
 /**
@@ -7,5 +9,5 @@ import com.pubnub.api.models.consumer.PNStatus;
  */
 
 public interface OnResultListener<T> {
-    void result(T result, PNStatus status);
+    void result(@Nullable T result, PNStatus status);
 }

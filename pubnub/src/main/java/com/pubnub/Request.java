@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.pubnub.api.builder.SubscribeBuilder;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
@@ -119,6 +120,9 @@ public class Request {
                                     if (PubnubConfiguration.isDebuggable()) {
                                         Log.e(getClass().getSimpleName(), "PNStatus:" + status.toString());
                                     }
+                                    if (param.resultListener != null) {
+                                        param.resultListener.result(result, status);
+                                    }
                                     return;
                                 }
                                 String channel = TextUtils.join(",", status.getAffectedChannels());
@@ -201,6 +205,7 @@ public class Request {
     /********************************************************************/
     public static class SubscribeBuilder<T extends SubscribeBuilder> implements IPubnubProperty<T> {
         private PubNubParam param;
+        private boolean isWithPresence = false;
 
         public SubscribeBuilder(PubNubParam param) {
             this.param = param;
@@ -226,6 +231,7 @@ public class Request {
         /*
          *  <PNStatus>
          */
+        @Deprecated
         public T statusCallback(@NonNull OnSubscribeListener<PNStatus> l) {
             param.statusListener = l;
             return (T) this;
@@ -234,6 +240,7 @@ public class Request {
         /*
          *  <PNMessageResult>
          */
+        @Deprecated
         public T messageCallback(@NonNull OnSubscribeListener<PNMessageResult> l) {
             param.messageListener = l;
             return (T) this;
@@ -242,18 +249,26 @@ public class Request {
         /*
          *  <PNPresenceEventResult>
          */
+        @Deprecated
         public T presenceCallback(@NonNull OnSubscribeListener<PNPresenceEventResult> l) {
             param.presenceListener = l;
+            return (T) this;
+        }
+
+        public T withPresence() {
+            isWithPresence = true;
             return (T) this;
         }
 
         @Override
         public void build() {
             Pubnub pubNub = new Pubnub(param);
-            pubNub.getPubNub().subscribe()
-                    .channels(param.channels == null ? new ArrayList<String>() : Arrays.asList(param.channels))
-                    .withPresence()
-                    .execute();
+            com.pubnub.api.builder.SubscribeBuilder subscribeBuilder = pubNub.getPubNub().subscribe();
+            subscribeBuilder.channels(param.channels == null ? new ArrayList<String>() : Arrays.asList(param.channels));
+            if (isWithPresence) {
+                subscribeBuilder.withPresence();
+            }
+            subscribeBuilder.execute();
         }
     }
 
@@ -308,6 +323,7 @@ public class Request {
             this.param = param;
         }
 
+        @Deprecated
         public T statusCallback(@NonNull OnSubscribeListener<PNStatus> l) {
             param.statusListener = l;
             return (T) this;
@@ -330,7 +346,7 @@ public class Request {
             this.param = param;
         }
 
-
+        @Deprecated
         public T statusCallback(@NonNull OnSubscribeListener<PNStatus> l) {
             param.statusListener = l;
             return (T) this;
@@ -372,8 +388,8 @@ public class Request {
         }
 
         /*
-        *  <PNHereNowResult>
-        */
+         *  <PNHereNowResult>
+         */
         public T callback(@NonNull OnResultListener<PNHereNowResult> l) {
             param.resultListener = l;
             return (T) this;
@@ -417,8 +433,8 @@ public class Request {
         }
 
         /*
-        *  <PNWhereNowResult>
-        */
+         *  <PNWhereNowResult>
+         */
         public T callback(@NonNull OnResultListener<PNWhereNowResult> l) {
             param.resultListener = l;
             return (T) this;
